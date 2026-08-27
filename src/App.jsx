@@ -1,18 +1,19 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import { Package, Pencil, Trash2 } from "lucide-react";
+import { Package, Pencil, Trash2, PlusCircle } from "lucide-react";
 
 function App() {
   const API_URL = "http://localhost:5000/api/products";
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
   const fetchProduct = async () => {
     setLoading(true);
     setError("");
     try {
       const response = await fetch(API_URL);
-      console.log(response);
       if (!response.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
       const data = await response.json();
       setProducts(data);
@@ -26,6 +27,27 @@ function App() {
     //fetch data from API
     fetchProduct();
   }, []);
+
+  const handleCreateProduct = async (e) => {
+    e.preventDefault();
+    if (!name || !price) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+      return;
+    }
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, price: Number(price) }),
+      });
+      if (!response.ok) throw new Error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      setName("");
+      setPrice("");
+      fetchProduct();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <>
@@ -51,7 +73,52 @@ function App() {
               </div>
             </div>
           </header>
-          <section>From</section>
+          <section className="card border border-base-300 bg-base-100 shadow-sm">
+            <div className="card-body p-5 sm:p-6">
+              <div className="mb-2 flex items-center gap-3">
+                <div className="rounded-xl bg-primary/10 p-2 text-primary">
+                  <PlusCircle className="size-5" />
+                </div>
+              </div>
+              <h2 className="card-title text-xl">เพิ่มสินค้าใหม่</h2>
+              <p className="text-sm text-base-content/60">
+                กรอกข้อมูลเพื่อเพิ่มรายการเข้าสู่ระบบ
+              </p>
+            </div>
+            <form
+              className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-[1fr_0.65fr_auto] md:items-end"
+              onSubmit={handleCreateProduct}
+            >
+              <label className="form-control w-full">
+                <span className="label-text mb-2 font-medium">ชื่อสินค้า</span>
+                <input
+                  className="input input-bordered w-full"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="เช่น Gaming keyboard"
+                />
+              </label>
+
+              <label className="form-control w-full">
+                <span className="label-text mb-2 font-medium">ราคา (บาท)</span>
+                <input
+                  className="input input-bordered w-full"
+                  type="text"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="เช่น 1500"
+                />
+              </label>
+              <button
+                className="btn btn-primary w-full md:w-auto"
+                type="submit"
+              >
+                <Pencil className="size-4" />
+                บันทึกข้อมูล
+              </button>
+            </form>
+          </section>
           {error && (
             <div className="alert alert-error shadow-sm">
               <span>เกิดข้อผิดพลาด: {error}</span>
