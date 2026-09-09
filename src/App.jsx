@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { Package, Pencil, Trash2, PlusCircle } from "lucide-react";
 
 function App() {
-  const API_URL = "http://localhost:5000/api/products";
+  const API_URL = import.meta.env.VITE_API_URL;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
+  const [editingId, setEditingId] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const fetchProduct = async () => {
     setLoading(true);
     setError("");
@@ -49,6 +51,62 @@ function App() {
     }
   };
 
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
+    if (!name || !price) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const response = await fetch(`${API_URL}/${editingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, price: Number(price) }),
+      });
+      if (!response.ok) throw new Error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      setProducts((currentProducts) =>
+        currentProducts.map((product) =>
+          product.id === editingId
+            ? { ...product, name, price: Number(price) }
+            : product,
+        ),
+      );
+      setName("");
+      setPrice("");
+      setEditingId(null);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const startEditing = (product) => {
+    setEditingId(product.id);
+    setName(product.name);
+    setPrice(product.price);
+  };
+
+  const handleDeleteProduct = async (id) => {
+    if (!confirm("คุณต้องการลบสินค้านี้ใช่หรือไม่?")) return;
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("เกิดข้อผิดพลาดในการลบข้อมูล");
+      setProducts((prev) => prev.filter((product) => product.id !== id));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const resetForm = () => {
+    setName("");
+    setPrice("");
+    setEditingId(null);
+  };
+
   return (
     <>
       <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
@@ -86,8 +144,8 @@ function App() {
               </p>
             </div>
             <form
-              className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-[1fr_0.65fr_auto] md:items-end"
-              onSubmit={handleCreateProduct}
+              className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-[1fr_0.65fr_auto_auto] md:items-end"
+              onSubmit={editingId ? handleUpdateProduct : handleCreateProduct}
             >
               <label className="form-control w-full">
                 <span className="label-text mb-2 font-medium">ชื่อสินค้า</span>
@@ -104,19 +162,31 @@ function App() {
                 <span className="label-text mb-2 font-medium">ราคา (บาท)</span>
                 <input
                   className="input input-bordered w-full"
-                  type="text"
+                  type="number"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   placeholder="เช่น 1500"
                 />
               </label>
+
               <button
                 className="btn btn-primary w-full md:w-auto"
                 type="submit"
+                disabled={submitting}
               >
                 <Pencil className="size-4" />
-                บันทึกข้อมูล
+                {editingId ? "อัปเดตข้อมูล" : "บันทึกข้อมูล"}
               </button>
+
+              {editingId && (
+                <button
+                  className="btn btn-ghost w-full md:w-auto"
+                  type="button"
+                  onClick={resetForm}
+                >
+                  ยกเลิก
+                </button>
+              )}
             </form>
           </section>
           {error && (
@@ -168,7 +238,7 @@ function App() {
                 <tbody>
                   {products.map((item) => (
                     <tr key={item.id}>
-                      <td className="font-mono text-xd text-base-content/50">
+                      <td className="font-mono text-xs text-base-content/50">
                         #{item.id}
                       </td>
                       <td className="font-medium">{item.name}</td>
@@ -176,10 +246,16 @@ function App() {
                         {Number(item.price).toLocaleString()}฿
                       </td>
                       <td className="text-right">
-                        <button className="btn btn-square btn-ghost btn-sm text-primary hover:bg-primary/10">
+                        <button
+                          onClick={() => startEditing(item)}
+                          className="btn btn-square btn-ghost btn-sm text-primary hover:bg-primary/10"
+                        >
                           <Pencil className="size-4" />
                         </button>
-                        <button className="btn btn-square btn-ghost btn-sm text-primary hover:bg-primary/10">
+                        <button
+                          onClick={() => handleDeleteProduct(item.id)}
+                          className="btn btn-square btn-ghost btn-sm text-error hover:bg-error/10"
+                        >
                           <Trash2 className="size-4" />
                         </button>
                       </td>
