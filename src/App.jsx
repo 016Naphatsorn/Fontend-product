@@ -349,11 +349,7 @@ function App() {
             <div>
               <div className="mb-3 flex items-center gap-3">
                 <div className="grid place-items-center rounded-lg bg-white px-1 py-1 ring-2 ring-white/10">
-                  <img
-                    src="img/logo1.png"
-                    className="size-7"
-                    alt="Brix Land"
-                  />
+                  <img src="img/logo1.png" className="size-7" alt="Brix Land" />
                 </div>
               </div>
 
@@ -378,9 +374,7 @@ function App() {
 
               <div>
                 <h2 className="card-title text-xl">
-                  {editingId
-                    ? "แก้ไขข้อมูลผู้ใช้บริการ"
-                    : "ลงทะเบียนเข้าเล่น"}
+                  {editingId ? "แก้ไขข้อมูลผู้ใช้บริการ" : "ลงทะเบียนเข้าเล่น"}
                 </h2>
 
                 <p className="text-sm text-base-content/60">
@@ -391,15 +385,11 @@ function App() {
 
             <form
               className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
-              onSubmit={
-                editingId ? handleUpdateProduct : handleCreateProduct
-              }
+              onSubmit={editingId ? handleUpdateProduct : handleCreateProduct}
             >
               {/* ชื่อ */}
               <label className="form-control w-full">
-                <span className="label-text mb-2 font-medium">
-                  ชื่อเด็ก
-                </span>
+                <span className="label-text mb-2 font-medium">ชื่อเด็ก</span>
 
                 <input
                   className="input input-bordered w-full"
@@ -412,9 +402,7 @@ function App() {
 
               {/* อายุ */}
               <label className="form-control w-full">
-                <span className="label-text mb-2 font-medium">
-                  อายุ (ขวบ)
-                </span>
+                <span className="label-text mb-2 font-medium">อายุ (ขวบ)</span>
 
                 <input
                   className="input input-bordered w-full"
@@ -444,9 +432,7 @@ function App() {
 
               {/* เวลาเข้า */}
               <label className="form-control w-full">
-                <span className="label-text mb-2 font-medium">
-                  เวลาเข้า
-                </span>
+                <span className="label-text mb-2 font-medium">เวลาเข้า</span>
 
                 <input
                   className="input input-bordered w-full"
@@ -477,9 +463,7 @@ function App() {
 
               {/* เวลาออก */}
               <label className="form-control w-full">
-                <span className="label-text mb-2 font-medium">
-                  เวลาออก
-                </span>
+                <span className="label-text mb-2 font-medium">เวลาออก</span>
 
                 <input
                   className="input input-bordered w-full bg-base-200"
@@ -519,9 +503,7 @@ function App() {
                       <div className="text-xs text-base-content/60">
                         ระยะเวลา
                       </div>
-                      <div className="text-xl font-bold">
-                        {duration} นาที
-                      </div>
+                      <div className="text-xl font-bold">{duration} นาที</div>
                     </div>
                   </div>
                 </div>
@@ -570,7 +552,7 @@ function App() {
             <div className="card-body items-center py-14 text-center">
               <Package className="size-12 text-base-content/25" />
 
-              <h2 className="card-title mt-2">
+              <h2 className="card-title mt-2 rounded-lg bg-black/30 px-2 py-1 text-sm text-primary-content/75 ring-2 ring-white/15 sm:text-base">
                 ยังไม่มีรายการเข้าเล่น
               </h2>
 
@@ -594,9 +576,7 @@ function App() {
             <div className="card-body p-0">
               <div className="flex items-center justify-between px-5 py-5 sm:px-6">
                 <div>
-                  <h2 className="card-title">
-                    รายการผู้ใช้บริการ
-                  </h2>
+                  <h2 className="card-title">รายการผู้ใช้บริการ</h2>
 
                   <p className="text-sm text-base-content/60">
                     มีผู้ใช้บริการ {products.length} รายการ
@@ -638,9 +618,7 @@ function App() {
                           </td>
 
                           {/* Name */}
-                          <td className="font-semibold">
-                            {item.name}
-                          </td>
+                          <td className="font-semibold">{item.name}</td>
 
                           {/* Age */}
                           <td>{item.age} ขวบ</td>
@@ -662,9 +640,7 @@ function App() {
                           <td>
                             <span
                               className={`font-mono text-lg font-bold ${
-                                isPlaying
-                                  ? "text-primary"
-                                  : "text-error"
+                                isPlaying ? "text-primary" : "text-error"
                               }`}
                             >
                               {remaining.text}
@@ -705,9 +681,7 @@ function App() {
                               </button>
 
                               <button
-                                onClick={() =>
-                                  handleDeleteProduct(item.id)
-                                }
+                                onClick={() => handleDeleteProduct(item.id)}
                                 className="btn btn-square btn-ghost btn-sm text-error hover:bg-error/10"
                                 title="ลบ"
                               >
