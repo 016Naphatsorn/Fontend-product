@@ -349,7 +349,7 @@ function App() {
             <div>
               <div className="mb-3 flex items-center gap-3">
                 <div className="grid place-items-center rounded-lg bg-white px-1 py-1 ring-2 ring-white/10">
-                  <img src="img/logo1.png" className="size-7" alt="Brix Land" />
+                  <img src="/img/logo1.png" className="size-7" alt="Brix Land" />
                 </div>
               </div>
 
